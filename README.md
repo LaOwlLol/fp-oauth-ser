@@ -30,8 +30,8 @@ On launch, the application will use environment variables to establish a connect
 Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 ```
 
--You will need service account credentials, even if you want to use a local gcds emulator. [Read more about them here](https://cloud.google.com/iam/docs/granting-roles-to-service-accounts)
--You will also need to set credentials [Learn how to set credentials here](https://cloud.google.com/docs/authentication/production)
+- You will need service account credentials, even if you want to use a local gcds emulator. [Read more about them here](https://cloud.google.com/iam/docs/granting-roles-to-service-accounts)
+- You will also need to set credentials [Learn how to set credentials here](https://cloud.google.com/docs/authentication/production)
 
 You should at least acquire credentials, be sure to secure them, and simply up the following environment variables.
 
