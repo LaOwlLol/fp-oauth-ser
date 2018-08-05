@@ -15,7 +15,7 @@ apply plugin: 'io.spring.dependency-management'
 
 bootJar {
     baseName = 'fp-oauth-ser'
-    version =  '0.02'
+    version =  '0.1'
 }
 
 repositories {

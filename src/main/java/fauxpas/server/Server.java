@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class Server {
 
     public static void main(String[] args) {
-        System.out.println("http://"+System.getenv("DATASTORE_EMULATOR_HOST"));
+        System.out.println("Datastore @ --> http://"+System.getenv("DATASTORE_EMULATOR_HOST"));
         SpringApplication.run(Server.class, args);
     }
 

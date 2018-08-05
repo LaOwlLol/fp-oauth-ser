@@ -4,6 +4,7 @@ import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
+import fauxpas.entities.ClientRecord;
 import fauxpas.entities.SessionRecord;
 
 import java.util.Optional;
@@ -16,25 +17,14 @@ public class GDatastore {
      */
     private static void init() {
         if (datastore == null) {
-
-            if (System.getenv("DATASTORE_LOCATION").equalsIgnoreCase("local")) {
-                System.out.println("Connecting to datastore emulator...");
-                datastore = DatastoreOptions.newBuilder()
-                      .setHost("http://"+System.getenv("DATASTORE_EMULATOR_HOST"))
-                      .setProjectId(System.getenv("DATASTORE_PROJECT_ID"))
-                      .build().getService();
-            }
-            else {
-                System.out.println("Connecting to default datastore...");
-                datastore = DatastoreOptions.getDefaultInstance().getService();
-            }
+            datastore = DatastoreOptions.getDefaultInstance().getService();
         }
     }
 
     /**
      * Get a Session Key for a given client.
      * @param client_id - the client's identifier.
-     * @return a key for the client.
+     * @return a key for the client's session record.
      */
     public static Key getSessionKey(String client_id) {
         init();
@@ -55,7 +45,6 @@ public class GDatastore {
         else {
             return Optional.empty();
         }
-
     }
 
     /**
@@ -67,12 +56,44 @@ public class GDatastore {
         datastore.delete(getSessionKey(client_id));
     }
 
+
+    /**
+     * Get a Session Key for a given client.
+     * @param client_id - the client's identifier.
+     * @return a key for the client's record.
+     */
+    public static Key getClientKey(String client_id) {
+        init();
+        return datastore.newKeyFactory().setKind("Client").newKey(client_id);
+    }
+
+    /**
+     * Get optional to a client record, if one exists.
+     * @param client_id - client to retrieve.
+     * @return Optional to the client's record or nullable.
+     */
+    public static Optional<ClientRecord> getClient(String client_id) {
+        init();
+        Entity result = datastore.get(getClientKey(client_id));
+        if (result != null) {
+            return Optional.of(new ClientRecord(result));
+        }
+        else {
+            return Optional.empty();
+        }
+    }
+
     /**
      * Upsert an Entity
+     * Note**: Should remain private access to enforce no is allowed to upsert Entities other than Session (possibly client)
      * @param entity - the entity to upsert.
      */
-    public static void setEntity(Entity entity) {
+    private static void upsertEntity(Entity entity) {
         init();
         datastore.put(entity);
+    }
+
+    public static void upsertSession(SessionRecord session) {
+        upsertEntity(session.toEntity());
     }
 }

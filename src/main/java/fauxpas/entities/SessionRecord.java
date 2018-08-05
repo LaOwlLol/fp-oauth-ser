@@ -21,7 +21,6 @@ public class SessionRecord {
      */
     private String accessToken;
 
-
     public String getAccessToken() {
         return accessToken;
     }
@@ -52,7 +51,7 @@ public class SessionRecord {
     }
 
     public SessionRecord(Entity sessionEntity) {
-        this.client_id = sessionEntity.getKey().toString();
+        this.client_id = sessionEntity.getKey().getName();
         this.accessToken = sessionEntity.getString("token");
         this.issued = sessionEntity.getLong("issued");
         this.ttl = sessionEntity.getLong("ttl");
@@ -72,5 +71,12 @@ public class SessionRecord {
               .set("issued", this.issued)
               .set("ttl", this.ttl)
               .build();
+    }
+
+    public String toString() {
+        return "Client_ID: "+ this.client_id+"\n" +
+              "Token:" + this.accessToken+"\n"+
+              "Issued: " + this.issued + "\n"+
+              "ttl: "+ this.ttl;
     }
 }
