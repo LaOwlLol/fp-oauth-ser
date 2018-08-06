@@ -27,6 +27,7 @@ public class SessionRecord {
 
     /**
      * issued - the time the accessToken was issued.
+     * Note** when instantiating a new SessionRecord this value should be the System.currentTimeMillis() value.
      */
     private Long issued;
 
@@ -36,12 +37,15 @@ public class SessionRecord {
 
     /**
      * ttl - time to live or how long the token should be considered valid.
+     * Note** this value is the number of milliseconds a record will live compared against System.currentTimeMillis().
      */
     private Long ttl;
 
     public Long getTtl() {
         return ttl;
     }
+
+    //Constructors
 
     public SessionRecord(String client_id, String accessToken, long issued, long ttl) {
         this.client_id = client_id;
@@ -56,6 +60,8 @@ public class SessionRecord {
         this.issued = sessionEntity.getLong("issued");
         this.ttl = sessionEntity.getLong("ttl");
     }
+
+    //Helpers
 
     /**
      * Turn this object in to a Google Cloud Datastore entity.
@@ -79,4 +85,27 @@ public class SessionRecord {
               "Issued: " + this.issued + "\n"+
               "ttl: "+ this.ttl;
     }
+
+    /**
+     * Check if this session has expired. Meaning the current system time minus session's issued time is less
+     * than the sessions time to live.
+     * @return true if this session is still alive. false if this session has expired.
+     */
+    public boolean hasExpired() {
+        if (System.currentTimeMillis() - this.getIssued() > this.getTtl() ) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Get a Invalid Session object.
+     * @return Invalid Session
+     */
+    public static SessionRecord Invalid() {
+        return new SessionRecord("invalid", "null", 0, 0);
+    }
+
 }
